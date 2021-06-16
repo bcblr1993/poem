@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redis:5.0.10
+    ports:
+      - "6379:6379"
+    networks:
+      - poem_network
+    command: redis-server
+
+  es:
+    image: elasticsearch:6.8.0
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - ./ik/:/usr/share/elasticsearch/plugins/ik
+    networks:
+      - poem_network
+
+  kibana:
+    image: kibana:6.8.0
+    ports:
+      - "5601:5601"
+    networks:
+      - poem_network
+    volumes:
+      - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+    depends_on:
+      - es
+
+networks:
+  poem_network:
